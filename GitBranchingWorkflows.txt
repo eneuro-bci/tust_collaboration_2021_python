@@ -15,7 +15,7 @@ so you can decide if you would like to incorporate them into your own developmen
 
 Long-Running Branches
 
-
+In reality, we’re talking about pointers moving up the line of commits you’re making. The stable branches are farther down the line in your commit history, and the bleeding-edge branches are farther up the history.
 
 Topic Branches
 
