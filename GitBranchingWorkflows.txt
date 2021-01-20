@@ -1,0 +1,10 @@
+Git Best Practices
+
+1. Don’t git push straight to master. Branch it out!
+2. Write descriptive and meaningful commit messages.
+3. Rebase your working branch frequently.
+4. Test changes even when there are no conflicts.
+5. Publish your changes.
+
+ 
+Git Branching - Branching Workflows (https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows)
