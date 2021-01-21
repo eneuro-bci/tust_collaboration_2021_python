@@ -15,7 +15,7 @@ so you can decide if you would like to incorporate them into your own developmen
 
 Long-Running Branches
 
-
+Because Git uses a simple three-way merge, merging from one branch into another mutiple times over a long period is generally easy to do. This means you can have several branches that are always open and that you use for different stages of your development cycle: you can merge regularty from some of them into others.
 
 Topic Branches
 
