@@ -13,7 +13,7 @@ Elementary
            - This is a little bit confusing, but your interpretation of printing the multiplication table is valid.
             If following this interpretation, then here is the complete multiplication table besides for number one (1)
 
-    8: "Write a program that prints the next 20 leap years"
+    10: "Write a program that prints the next 20 leap years"
 
 Lists - Strings
 
