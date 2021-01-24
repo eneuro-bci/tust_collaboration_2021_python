@@ -5,5 +5,6 @@ def func(words):
         print('* {a:<{b}} *'.format(a=word, b=size))
     print('*' * (size + 4))
 
+
 words = ["Hello", "World", "in", "a", "frame"]
 func(words)
