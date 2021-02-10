@@ -31,13 +31,19 @@ class Settings:
 
     TEXT_SIZE_STATUS = 18
     TEXT_SIZE_WORD = 30
+    CHANGE_WORD = 30
 
     TEXT_FONT_STATUS = "arial"
     TEXT_FONT_WORD = "arial"
 
+    word_x = 600
+    word_y = 360
+    CHANGE_POSITION = (word_x, word_y)
+
     TEXT_ELAPSED_TIME_POSITION = (25, 0)
     TEXT_FPS_POSITION = (WINDOW_SIZE[0] - 100, 0)
-    TEXT_WORD_POSITION = (int(WINDOW_SIZE[0] / 2) - 50, int(WINDOW_SIZE[1] / 2))
+    TEXT_WORD_POSITION = (word_x, word_y)
+
 
     # Time
     TIME_WORD_REFRESH = 1.0   # In seconds

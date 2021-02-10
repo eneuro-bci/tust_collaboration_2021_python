@@ -14,6 +14,7 @@ Tianjin, China, February 2021.
 """
 
 # Local imports
+import random
 import time                         # The first group is always for Python's built-in packages
 
 import pygame                       # Second group is for external packages (numpy, pygame, etc)
@@ -61,6 +62,7 @@ class MainWindow:
         self.font_elapsed_time = None
         self.font_fps = None
         self.font_word = None
+        self.font_change = None
 
         # Texts (the string displayed on the screen) using the Font objects, values below are dummy
         self.text_elapsed_time = "Elapsed Time"
@@ -71,6 +73,9 @@ class MainWindow:
         self.position_elapsed_time = None
         self.position_fps = None
         self.position_word = None
+        self.position_change = None
+        self.word_x = None
+        self.word_y = None
 
     def initialize(self):
         """
@@ -88,6 +93,7 @@ class MainWindow:
         self.font_elapsed_time = pygame.font.SysFont(Settings.TEXT_FONT_STATUS, Settings.TEXT_SIZE_STATUS)
         self.font_fps = pygame.font.SysFont(Settings.TEXT_FONT_STATUS, Settings.TEXT_SIZE_STATUS)
         self.font_word = pygame.font.SysFont(Settings.TEXT_FONT_WORD, Settings.TEXT_SIZE_WORD)
+        self.font_change = pygame.font.SysFont("arial", Settings.CHANGE_WORD)
 
         # Set a fixed Pygame event that is triggered every second (for the text status updates)
         self.clock = pygame.time.Clock()
@@ -104,6 +110,9 @@ class MainWindow:
         self.position_elapsed_time = Settings.TEXT_ELAPSED_TIME_POSITION
         self.position_fps = Settings.TEXT_FPS_POSITION
         self.position_word = Settings.TEXT_WORD_POSITION
+        self.word_x = Settings.word_x
+        self.word_y = Settings.word_y
+        self.position_change = (Settings.word_x, Settings.word_y)
 
         # Set user-defined flags and time references
         self.is_initialized = True
@@ -147,8 +156,8 @@ class MainWindow:
             self._update_on_screen_text(self.font_fps, self.text_fps, self.color_text_status,
                                         self.position_fps)
 
-            self._update_on_screen_text(self.font_word, self.text_word, self.color_text_word,
-                                        self.position_word)
+            self._update_on_screen_text(self.font_change, self.text_word, self.color_text_word,
+                                        self.position_change)
 
             self.clock.tick(self.target_fps)
             pygame.display.flip()
@@ -175,6 +184,49 @@ class MainWindow:
                 self.fps = self.fps_count
                 self.text_fps = f'FPS: {self.fps}'
                 self.fps_count = 0
+
+            if event.type == pygame.KEYDOWN:
+                print(event.key)
+                # Move up
+                if event.key == 1073741920:
+                    if Settings.word_y <= 0:
+                        Settings.word_y = Settings.word_y
+                    elif Settings.word_y > 0:
+                        Settings.word_y - 10
+                # Move down
+                elif event.key == 1073741914:
+                    if Settings.word_y >= Settings.WINDOW_SIZE[1]:
+                        Settings.word_y = Settings.WINDOW_SIZE[1]
+                    elif Settings.word_y < Settings.WINDOW_SIZE[1]:
+                        Settings.word_y = Settings.word_y + 10
+                # Move left
+                elif event.key == 1073741916:
+                    if Settings.word_x <= 0:
+                        Settings.word_x = Settings.word_x
+                    elif Settings.word_x > 0:
+                        Settings.word_x = Settings.word_x - 10
+                # Move right
+                elif event.key == 1073741918:
+                    if Settings.word_x < Settings.WINDOW_SIZE[0]:
+                        Settings.word_x = Settings.word_x + 10
+                    elif Settings.word_x >= Settings.WINDOW_SIZE[0]:
+                        Settings.word_x = Settings.word_x
+                # Back to the center
+                elif event.key == 1073741917:
+                    Settings.word_y = Settings.WINDOW_SIZE[1] / 2
+                    Settings.word_x = Settings.WINDOW_SIZE[0] / 2
+                # Random in one place
+                elif event.key == 1073741922:
+                    Settings.word_y = random.randint(50, 600)
+                    Settings.word_x = random.randint(50, 600)
+                # 第二个需求：使用上下方向键调整字的大小
+                elif event.key == 1073741906:
+                    # 将字体放大
+                    Settings.CHANGE_WORD = Settings.CHANGE_WORD + 10
+                elif event.key == 1073741905:
+                    # 将字体缩小
+                    Settings.CHANGE_WORD = Settings.CHANGE_WORD - 10
+                self.font_change = pygame.font.SysFont("arial", Settings.CHANGE_WORD)
 
     def _perform_word_refresh_event(self):
         """
