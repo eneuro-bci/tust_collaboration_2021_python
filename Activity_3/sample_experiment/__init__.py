@@ -18,10 +18,12 @@ Tianjin, China, February 2021.
 
 from .settings import Settings
 from .main_window import MainWindow
+from .color import Color
 
 __all__ = (
     'Settings',
     'MainWindow',
+    'Color',
 )
 
 # Note: This is usually when we check for package dependencies but will be added at a later point

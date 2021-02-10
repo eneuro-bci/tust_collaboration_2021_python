@@ -21,6 +21,7 @@ import pygame                       # Second group is for external packages (num
 import randomword
 
 from .settings import Settings      # Third group is user-written code imports
+from .color import Color
 
 
 class MainWindow:
@@ -40,6 +41,7 @@ class MainWindow:
         self.is_initialized = False
         self.is_running = False
         self.event_one_second = None  # Pygame's event object, will be triggered every 1 sec
+        self.event_change_color = None
 
         # Timing
         self.start_time = 0
@@ -57,6 +59,9 @@ class MainWindow:
         self.color_text_status = None  # Tuple used to represent the RGB Color used the status text
         self.color_text_word = None  # Tuple used to represent the RGB Color of the Word
         self.color_background = None  # Tuple for the RGB values of the background color
+        self.colors = None
+        self.colors2 = None
+        self.change_color = None
 
         # Font objects
         self.font_elapsed_time = None
@@ -98,13 +103,18 @@ class MainWindow:
         # Set a fixed Pygame event that is triggered every second (for the text status updates)
         self.clock = pygame.time.Clock()
         self.event_one_second = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.event_one_second, 1000)
+        pygame.time.set_timer(self.event_one_second, Settings.SPEED)
         self.target_fps = Settings.TARGET_FPS
 
         # Set default colors
-        self.color_text_status = (255, 255, 255)
-        self.color_text_word = (255, 255, 255)
-        self.color_background = (0, 0, 0)
+        self.event_change_color = pygame.USEREVENT + 2
+        pygame.time.set_timer(self.event_change_color, Settings.SPEED)
+        self.colors = Color.color_list[Color.change_color]
+        self.colors2 = Color.color_list2[Color.change_color]
+        self.change_color = Color.change_color
+        self.color_text_status = self.colors2
+        self.color_text_word = self.colors2
+        self.color_background = self.colors
 
         # Set positions
         self.position_elapsed_time = Settings.TEXT_ELAPSED_TIME_POSITION
@@ -139,11 +149,11 @@ class MainWindow:
             This is the main loop. Code in this section is run every frame.
             """
 
-            # Set frame background
-            self.screen.fill(self.color_background)
-
             # Check for input and user-defined events
             self._check_for_events()
+
+            # Set frame background
+            self.screen.fill(self.colors)
 
             # Check for completion of the time required to update the word
             if time.perf_counter() - self.timestamp >= self.time_word_refresh:
@@ -174,7 +184,7 @@ class MainWindow:
             if event.type == pygame.QUIT:
                 self.is_running = False
 
-            if event.type == self.event_one_second:
+            elif event.type == self.event_one_second:
 
                 # Update the elapsed time and FPS count
                 self.elapsed_time = time.perf_counter() - self.start_time
@@ -185,7 +195,7 @@ class MainWindow:
                 self.text_fps = f'FPS: {self.fps}'
                 self.fps_count = 0
 
-            if event.type == pygame.KEYDOWN:
+            elif event.type == pygame.KEYDOWN:
                 print(event.key)
                 # Move up
                 if event.key == 1073741920:
@@ -228,6 +238,34 @@ class MainWindow:
                     Settings.CHANGE_WORD = Settings.CHANGE_WORD - 10
                 self.font_change = pygame.font.SysFont("arial", Settings.CHANGE_WORD)
                 self.position_change = (Settings.word_x, Settings.word_y)
+
+            elif event.type == pygame.KEYDOWN:  # 按键事件
+                if event.key == 1073741904:  # 左方向键事件
+                    if Settings.SPEED - 100 < 50:  # 限制最高速度
+                        Settings.SPEED = 50
+                        pygame.time.set_timer(self.event_one_second, Settings.SPEED)
+                    else:
+                        Settings.SPEED = Settings.SPEED - 50  # 加速100
+                        pygame.time.set_timer(self.event_one_second, Settings.SPEED)
+                elif event.key == 1073741903:  # 右方向键事件
+                    if Settings.SPEED + 100 > 10000:  # 限制最低速度
+                        Settings.SPEED = 10000
+                        pygame.time.set_timer(self.event_one_second, Settings.SPEED)
+                    else:
+                        Settings.SPEED = Settings.SPEED + 100  # 减速100
+                        pygame.time.set_timer(self.event_one_second, Settings.SPEED)
+                print(event)
+
+            elif event.type == self.event_change_color:
+                if Color.change_color <= 255 + 255 + 255 + 255 + 255 + 255:  # 渐变色数组上限
+                    self.colors = Color.color_list[Color.change_color]
+                    self.colors2 = Color.color_list2[Color.change_color]
+                    Color.change_color += 1
+                else:
+                    Color.change_color = 0  # 重置渐变色数组
+                self.screen.fill(self.colors)
+
+                pygame.time.set_timer(self.event_change_color, Settings.SPEED)
 
     def _perform_word_refresh_event(self):
         """

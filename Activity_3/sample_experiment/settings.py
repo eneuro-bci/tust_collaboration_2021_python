@@ -44,6 +44,6 @@ class Settings:
     TEXT_FPS_POSITION = (WINDOW_SIZE[0] - 100, 0)
     TEXT_WORD_POSITION = (word_x, word_y)
 
-
     # Time
     TIME_WORD_REFRESH = 1.0   # In seconds
+    SPEED = 1000
