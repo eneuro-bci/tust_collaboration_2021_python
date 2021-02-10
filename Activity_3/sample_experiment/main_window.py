@@ -227,6 +227,7 @@ class MainWindow:
                     # 将字体缩小
                     Settings.CHANGE_WORD = Settings.CHANGE_WORD - 10
                 self.font_change = pygame.font.SysFont("arial", Settings.CHANGE_WORD)
+                self.position_change = (Settings.word_x, Settings.word_y)
 
     def _perform_word_refresh_event(self):
         """
