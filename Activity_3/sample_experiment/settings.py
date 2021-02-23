@@ -30,7 +30,8 @@ class Settings:
     WINDOW_SIZE = (1280, 720)
 
     TEXT_SIZE_STATUS = 18
-    TEXT_SIZE_WORD = 30
+    TEXT_SIZE_WORD_ENGLISH = 42
+    TEXT_SIZE_WORD_CHINESE = 80
 
     TEXT_FONT_STATUS = "arial"
     TEXT_FONT_WORD = "arial"

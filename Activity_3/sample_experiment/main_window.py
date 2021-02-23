@@ -15,8 +15,10 @@ Tianjin, China, February 2021.
 
 # Local imports
 import time                         # The first group is always for Python's built-in packages
+import random
 
 import pygame                       # Second group is for external packages (numpy, pygame, etc)
+import pygame.freetype
 import randomword
 
 from .settings import Settings      # Third group is user-written code imports
@@ -40,6 +42,7 @@ class MainWindow:
         self.is_initialized = False
         self.is_running = False
         self.event_one_second = None  # Pygame's event object, will be triggered every 1 sec
+        self.is_language_english = True
 
         # Timing
         self.start_time = 0
@@ -62,7 +65,8 @@ class MainWindow:
         # Font objects
         self.font_elapsed_time = None
         self.font_fps = None
-        self.font_word = None
+        self.font_word_english = None
+        self.font_word_chinese = None
 
         # Texts (the string displayed on the screen) using the Font objects, values below are dummy
         self.text_elapsed_time = "Elapsed Time"
@@ -89,7 +93,8 @@ class MainWindow:
         # Set font objects
         self.font_elapsed_time = pygame.font.SysFont(Settings.TEXT_FONT_STATUS, Settings.TEXT_SIZE_STATUS)
         self.font_fps = pygame.font.SysFont(Settings.TEXT_FONT_STATUS, Settings.TEXT_SIZE_STATUS)
-        self.font_word = pygame.font.SysFont(Settings.TEXT_FONT_WORD, Settings.TEXT_SIZE_WORD)
+        self.font_word_english = pygame.font.SysFont(Settings.TEXT_FONT_WORD, Settings.TEXT_SIZE_WORD_ENGLISH)
+        self.font_word_chinese = pygame.freetype.Font("C://Windows//Fonts//msyh.ttc", Settings.TEXT_SIZE_WORD_CHINESE)
 
         # Set a fixed Pygame event that is triggered every second (for the text status updates)
         self.clock = pygame.time.Clock()
@@ -142,8 +147,6 @@ class MainWindow:
             if time.perf_counter() - self.timestamp >= self.time_word_refresh:
                 self._perform_word_refresh_event()
 
-
-
             # At the end of each frame, update all textures and re-draw the screen
             self._update_on_screen_text(self.font_elapsed_time, self.text_elapsed_time, self.color_text_word,
                                         self.position_elapsed_time)
@@ -151,8 +154,16 @@ class MainWindow:
             self._update_on_screen_text(self.font_fps, self.text_fps, self.color_text_word,
                                         self.position_fps)
 
-            self._update_on_screen_text(self.font_word, self.text_word, self.color_text_word,
-                                        self.position_word)
+            if self.is_language_english:
+
+                self._update_on_screen_text(self.font_word_english, self.text_word, self.color_text_word,
+                                            self.position_word)
+
+            else:
+
+                _ = self.font_word_chinese.render_to(self.screen, self.position_word, self.text_word,
+                                                     self.color_text_word, 50)
+                pygame.display.update()
 
             self.clock.tick(self.target_fps)
             pygame.display.flip()
@@ -165,11 +176,21 @@ class MainWindow:
         """
 
         for event in pygame.event.get():
+            """
+            Note: Use if-elif to ask around the different pygame events
+            """
 
+            # Checking for quit the window
             if event.type == pygame.QUIT:
                 self.is_running = False
 
-            if event.type == self.event_one_second:
+            # Check for pressing the space bar to switch between English and Chinese
+            elif event.type == pygame.KEYDOWN:
+
+                if event.key == pygame.K_SPACE:
+                    self.is_language_english = not self.is_language_english
+
+            elif event.type == self.event_one_second:
 
                 # Update the elapsed time and FPS count
                 self.elapsed_time = time.perf_counter() - self.start_time
@@ -188,7 +209,11 @@ class MainWindow:
         """
 
         # Get a new word
-        self.text_word = randomword.get_random_word()
+        if self.is_language_english:
+            self.text_word = randomword.get_random_word()
+        else:
+            random_number = random.randint(0x4e00, 0x9fbf)
+            self.text_word = str(chr(random_number))
 
         # Choose the colors
         if self.color_index >= self.color_lists.number_colors:
