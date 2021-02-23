@@ -77,6 +77,7 @@ class MainWindow:
         self.position_elapsed_time = None
         self.position_fps = None
         self.position_word = None
+        self.mouse_position = None
 
     def initialize(self):
         """
@@ -110,7 +111,8 @@ class MainWindow:
         # Set positions
         self.position_elapsed_time = Settings.TEXT_ELAPSED_TIME_POSITION
         self.position_fps = Settings.TEXT_FPS_POSITION
-        self.position_word = Settings.TEXT_WORD_POSITION
+        self.position_word = Settings.TEXT_WORD_POSITION    # This is approximately the center of the screen
+        self.mouse_position = Settings.TEXT_WORD_POSITION
 
         # Set user-defined flags and time references
         self.is_initialized = True
@@ -165,6 +167,8 @@ class MainWindow:
                                                      self.color_text_word, 50)
                 pygame.display.update()
 
+            pygame.draw.circle(self.screen, self.color_text_word, self.mouse_position, 20, 8)
+
             self.clock.tick(self.target_fps)
             pygame.display.flip()
             self.fps_count += 1
@@ -189,6 +193,9 @@ class MainWindow:
 
                 if event.key == pygame.K_SPACE:
                     self.is_language_english = not self.is_language_english
+
+            elif event.type == pygame.MOUSEMOTION:
+                self.mouse_position = event.pos
 
             elif event.type == self.event_one_second:
 
