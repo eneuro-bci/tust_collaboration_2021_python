@@ -18,9 +18,11 @@ Tianjin, China, February 2021.
 
 from .settings import Settings
 from .main_window import MainWindow
+from .color import Color
 
 __all__ = (
     'Settings',
+    'Color',
     'MainWindow',
 )
 

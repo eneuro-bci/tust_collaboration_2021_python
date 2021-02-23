@@ -20,6 +20,7 @@ import pygame                       # Second group is for external packages (num
 import randomword
 
 from .settings import Settings      # Third group is user-written code imports
+from .color import Color
 
 
 class MainWindow:
@@ -53,7 +54,8 @@ class MainWindow:
         self.fps_count = 0
 
         # Colors
-        self.color_text_status = None  # Tuple used to represent the RGB Color used the status text
+        self.color_lists = Color()     # An object with the 2 lists with all the colors for text and background
+        self.color_index = 0
         self.color_text_word = None  # Tuple used to represent the RGB Color of the Word
         self.color_background = None  # Tuple for the RGB values of the background color
 
@@ -96,7 +98,7 @@ class MainWindow:
         self.target_fps = Settings.TARGET_FPS
 
         # Set default colors
-        self.color_text_status = (255, 255, 255)
+        self.color_lists.compute_colors()
         self.color_text_word = (255, 255, 255)
         self.color_background = (0, 0, 0)
 
@@ -140,11 +142,13 @@ class MainWindow:
             if time.perf_counter() - self.timestamp >= self.time_word_refresh:
                 self._perform_word_refresh_event()
 
+
+
             # At the end of each frame, update all textures and re-draw the screen
-            self._update_on_screen_text(self.font_elapsed_time, self.text_elapsed_time, self.color_text_status,
+            self._update_on_screen_text(self.font_elapsed_time, self.text_elapsed_time, self.color_text_word,
                                         self.position_elapsed_time)
 
-            self._update_on_screen_text(self.font_fps, self.text_fps, self.color_text_status,
+            self._update_on_screen_text(self.font_fps, self.text_fps, self.color_text_word,
                                         self.position_fps)
 
             self._update_on_screen_text(self.font_word, self.text_word, self.color_text_word,
@@ -185,6 +189,14 @@ class MainWindow:
 
         # Get a new word
         self.text_word = randomword.get_random_word()
+
+        # Choose the colors
+        if self.color_index >= self.color_lists.number_colors:
+            self.color_index = 0
+
+        self.color_background = self.color_lists.opposite_color_list[self.color_index]
+        self.color_text_word = self.color_lists.main_color_list[self.color_index]
+        self.color_index += 1
 
         # Update the reference timestamp
         self.timestamp = time.perf_counter()
