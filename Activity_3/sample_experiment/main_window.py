@@ -194,6 +194,8 @@ class MainWindow:
                 if event.key == pygame.K_SPACE:
                     self.is_language_english = not self.is_language_english
 
+
+
             elif event.type == pygame.MOUSEMOTION:
                 self.mouse_position = event.pos
 
