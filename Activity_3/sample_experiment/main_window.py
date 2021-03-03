@@ -14,14 +14,14 @@ Tianjin, China, February 2021.
 """
 
 # Local imports
-import time                         # The first group is always for Python's built-in packages
+import time  # The first group is always for Python's built-in packages
 import random
 
-import pygame                       # Second group is for external packages (numpy, pygame, etc)
+import pygame  # Second group is for external packages (numpy, pygame, etc)
 import pygame.freetype
 import randomword
 
-from .settings import Settings      # Third group is user-written code imports
+from .settings import Settings  # Third group is user-written code imports
 from .color import Color
 
 
@@ -57,7 +57,7 @@ class MainWindow:
         self.fps_count = 0
 
         # Colors
-        self.color_lists = Color()     # An object with the 2 lists with all the colors for text and background
+        self.color_lists = Color()  # An object with the 2 lists with all the colors for text and background
         self.color_index = 0
         self.color_text_word = None  # Tuple used to represent the RGB Color of the Word
         self.color_background = None  # Tuple for the RGB values of the background color
@@ -78,6 +78,8 @@ class MainWindow:
         self.position_fps = None
         self.position_word = None
         self.mouse_position = None
+        self.word_x = None
+        self.word_y = None
 
     def initialize(self):
         """
@@ -111,13 +113,15 @@ class MainWindow:
         # Set positions
         self.position_elapsed_time = Settings.TEXT_ELAPSED_TIME_POSITION
         self.position_fps = Settings.TEXT_FPS_POSITION
-        self.position_word = Settings.TEXT_WORD_POSITION    # This is approximately the center of the screen
+        self.position_word = Settings.TEXT_WORD_POSITION  # This is approximately the center of the screen
         self.mouse_position = Settings.TEXT_WORD_POSITION
+        self.word_x = Settings.WORD_X
+        self.word_y = Settings.WORD_Y
 
         # Set user-defined flags and time references
         self.is_initialized = True
         self.is_running = False
-        self.start_time = time.perf_counter()   # Used to compute the elapsed time
+        self.start_time = time.perf_counter()  # Used to compute the elapsed time
         self.elapsed_time = 0
         self.timestamp = 0
 
@@ -191,8 +195,72 @@ class MainWindow:
             # Check for pressing the space bar to switch between English and Chinese
             elif event.type == pygame.KEYDOWN:
 
+                # 空格键：中英文切换
                 if event.key == pygame.K_SPACE:
                     self.is_language_english = not self.is_language_english
+
+                # 小键盘2：向下移动
+                elif event.key == pygame.K_KP2:
+                    if self.word_y >= Settings.WINDOW_SIZE[1] - Settings.TEXT_SIZE_WORD_ENGLISH:
+                        self.word_y = self.word_y
+                    else:
+                        self.word_y = self.word_y + Settings.WORD_MOVEMENT
+
+                # 小键盘8：向上移动
+                elif event.key == pygame.K_KP8:
+                    if self.word_y <= 0:
+                        self.word_y = self.word_y
+                    else:
+                        self.word_y = self.word_y - Settings.WORD_MOVEMENT
+
+                # 小键盘4：向左移动
+                elif event.key == pygame.K_KP4:
+                    if self.word_x <= 0:
+                        self.word_x = self.word_x
+                    else:
+                        self.word_x = self.word_x - Settings.WORD_MOVEMENT
+
+                # 小键盘6：向右移动
+                elif event.key == pygame.K_KP6:
+                    if self.word_x >= Settings.WINDOW_SIZE[0]:  # TODO: Fix the check for the right position
+
+                        self.word_x = self.word_x
+                    else:
+                        self.word_x = self.word_x + Settings.WORD_MOVEMENT
+
+                # 小键盘5：坐标复位
+                elif event.key == pygame.K_KP5:
+                    self.word_x = Settings.WORD_X
+                    self.word_y = Settings.WORD_Y
+
+                # 小键盘0：随机坐标
+                elif event.key == pygame.K_KP0:
+                    self.word_x = random.randint(50, Settings.WINDOW_SIZE[0])
+                    self.word_y = random.randint(50, Settings.WINDOW_SIZE[1])
+
+                # 方向键上：字体放大
+                elif event.key == pygame.K_UP:
+                    Settings.TEXT_SIZE_WORD_ENGLISH = Settings.TEXT_SIZE_WORD_ENGLISH + 10
+                    Settings.TEXT_SIZE_WORD_CHINESE = Settings.TEXT_SIZE_WORD_CHINESE + 10
+
+                # 方向键下：字体缩小
+                elif event.key == pygame.K_DOWN:
+                    Settings.TEXT_SIZE_WORD_ENGLISH = Settings.TEXT_SIZE_WORD_ENGLISH - 10
+                    Settings.TEXT_SIZE_WORD_CHINESE = Settings.TEXT_SIZE_WORD_CHINESE - 10
+
+                elif event.key == pygame.K_LEFT:
+                    if self.time_word_refresh + Settings.TIME_WORD_CHANGE <= Settings.TIME_WORD_REFRESH:
+                        self.time_word_refresh += Settings.TIME_WORD_CHANGE
+
+                elif event.key == pygame.K_RIGHT:
+                    if self.time_word_refresh - Settings.TIME_WORD_CHANGE >= Settings.TIME_WORD_MIN:
+                        self.time_word_refresh -= Settings.TIME_WORD_CHANGE
+
+                self.font_word_english = pygame.font.SysFont(Settings.TEXT_FONT_WORD, Settings.TEXT_SIZE_WORD_ENGLISH)
+                self.font_word_chinese = pygame.freetype.Font("C://Windows//Fonts//msyh.ttc",
+                                                              Settings.TEXT_SIZE_WORD_CHINESE)
+
+                self.position_word = (self.word_x, self.word_y)
 
             elif event.type == pygame.MOUSEMOTION:
                 self.mouse_position = event.pos

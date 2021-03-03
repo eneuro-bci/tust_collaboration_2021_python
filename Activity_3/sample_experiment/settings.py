@@ -38,7 +38,13 @@ class Settings:
 
     TEXT_ELAPSED_TIME_POSITION = (25, 0)
     TEXT_FPS_POSITION = (WINDOW_SIZE[0] - 100, 0)
-    TEXT_WORD_POSITION = (int(WINDOW_SIZE[0] / 2) - 50, int(WINDOW_SIZE[1] / 2))
+    WORD_X = int(WINDOW_SIZE[0] / 2) - 50
+    WORD_Y = int(WINDOW_SIZE[1] / 2)
+    WORD_MOVEMENT = 30
+    TEXT_WORD_POSITION = (WORD_X, WORD_Y)
 
     # Time
     TIME_WORD_REFRESH = 1.0   # In seconds
+    TIME_WORD_CHANGE = 0.05    # In seconds
+    TIME_WORD_MIN = 0.06
+    SPEED = 1000
