@@ -1,0 +1,51 @@
+General:
+* Try to follow PEP8 standards
+* You can format your file with PEP8 nomenclature with Pycharm by pressing Left CTRL + ALt + L
+
+Tasks 2020.01.18-22
+
+Elementary
+    6: "Write a program that asks the user for a number n and gives him the possibility to
+        choose between computing the sum and computing the product of 1,…,n."
+
+           - Consider when the user input is value is less than 1. It should not compute any operation.
+
+    7: "Write a program that prints a multiplication table for numbers up to 12"
+
+           - This is a little bit confusing, but your interpretation of printing the multiplication table is valid.
+            If following this interpretation, then where is the complete multiplication table besides for number one (1)
+
+    10: "Write a program that prints the next 20 leap years"
+
+Lists - Strings
+
+    4: "Write a function that returns the elements on odd positions in a list."
+
+            - Not wrong
+
+    9: "Write a function that concatenates two lists. [a,b,c], [1,2,3] → [a,b,c,1,2,3]"
+
+            - Not wrong
+
+    11: "Write a function that merges two sorted lists into a new sorted list. [1,4,6],
+        [2,3,5] → [1,2,3,4,5,6]. You can do this quicker than concatenating them
+        followed by a sort"
+
+            - Not wrong
+
+    13: "Write a function that computes the list of the first 100 Fibonacci numbers."
+
+            -No comments
+
+    19: "Write a function that takes a list of strings an prints them, one per line, in a
+        rectangular frame. For example the list ["Hello", "World", "in", "a",
+        "frame"] gets printed as:
+        *********
+        * Hello *
+        * World *
+        * in *
+        * a *
+        * frame *
+        *********"
+
+            - Ok
